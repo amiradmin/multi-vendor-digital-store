@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class Vendor(models.Model):
@@ -15,12 +15,12 @@ class Vendor(models.Model):
         created_at: Timestamp when the vendor was created.
     """
 
-    user: User = models.OneToOneField(User, on_delete=models.CASCADE)
-    store_name: str = models.CharField(max_length=255)
-    bio: str = models.TextField()
-    logo: str = models.ImageField(upload_to='vendors/logos/', blank=True, null=True)
-    website_url: str = models.URLField(blank=True, null=True)
-    created_at: str = models.DateTimeField(auto_now_add=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    store_name = models.CharField(max_length=255)
+    bio = models.TextField()
+    logo = models.ImageField(upload_to='vendors/logos/', blank=True, null=True)
+    website_url = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         """
