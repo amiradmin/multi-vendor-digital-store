@@ -17,6 +17,7 @@ class Product(models.Model):
         created_at: Timestamp when the product was created.
         updated_at: Timestamp when the product was last updated.
         is_active: A boolean indicating whether the product is active or not.
+        file: The file associated with the product (e.g., digital download).
     """
 
     class ProductCategory(models.TextChoices):
@@ -38,5 +39,7 @@ class Product(models.Model):
     created_at: str = models.DateTimeField(auto_now_add=True)
     updated_at: str = models.DateTimeField(auto_now=True)
     is_active: bool = models.BooleanField(default=True)
+    file: models.FileField(upload_to='products/%Y/%m/%d/', null=True, blank=True)  # New FileField added
+
 
 
