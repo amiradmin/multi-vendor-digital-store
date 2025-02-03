@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.templatetags.static import static
+
 
 User = get_user_model()
 
@@ -8,9 +10,20 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the User model"""
 
+    avatar_url = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ["id", "username", "email", "is_vendor", "address", "phone_number"]
+        fields = ['id', 'username', 'email', 'avatar_url', 'address', 'phone_number']
+
+    def get_avatar_url(self, obj):
+        """
+        Custom method to return the full URL for the avatar image.
+        If the user doesn't have an avatar, return a default image URL.
+        """
+        if obj.avatar:
+            return obj.avatar.url
+        return static('images/avatar.png')  # Provide a path to a default avatar image
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

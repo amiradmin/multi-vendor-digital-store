@@ -28,6 +28,8 @@ const Login = () => {
 
 try {
   const response = await api.post("auth/login/", formData);
+  const token = response.data.access;  // Adjust based on how your API returns the token
+  localStorage.setItem('token', token);
   console.log(response); // Add this line to inspect the response
   alert("Login successful!");
   router.push("/"); // Navigate to homepage
