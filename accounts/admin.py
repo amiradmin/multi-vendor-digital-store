@@ -1,30 +1,32 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
+from django.utils.html import format_html
 
-# If you have a custom user model, you should use it in place of the default User model
 User = get_user_model()
 
 
 class CustomUserAdmin(UserAdmin):
     """
-    Custom User Admin to display additional fields for custom user model in the admin interface.
+    Custom User Admin to display additional fields for the custom user model in the admin interface.
     """
     model = User
-    list_display = ['username', 'email', 'is_staff', 'is_active', 'date_joined']
+    list_display = ['username', 'email', 'avatar_display', 'address', 'phone_number', 'is_staff', 'is_active', 'date_joined']
     list_filter = ['is_staff', 'is_active']
-    search_fields = ['username', 'email']
+    search_fields = ['username', 'email', 'address', 'phone_number']
     ordering = ['date_joined']
 
-    # You can add custom fieldsets if you have additional fields in the custom user model
-    # fieldsets = UserAdmin.fieldsets + (
-    #     (None, {'fields': ('custom_field1', 'custom_field2')}),
-    # )
-    #
-    # add_fieldsets = UserAdmin.add_fieldsets + (
-    #     (None, {'fields': ('custom_field1', 'custom_field2')}),
-    # )
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('avatar', 'address', 'phone_number')}),  # Adding avatar, address, and phone number
+    )
+
+    def avatar_display(self, obj):
+        """Display avatar as an image in the admin panel."""
+        if obj.avatar:
+            return format_html(f'<img src="{obj.avatar.url}" width="50" height="50" style="border-radius: 50%;" />')
+        return "No Avatar"
+
+    avatar_display.short_description = "Avatar"
 
 
-# Register the custom user model with the custom admin interface
 admin.site.register(User, CustomUserAdmin)

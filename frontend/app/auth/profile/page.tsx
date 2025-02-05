@@ -10,6 +10,7 @@ const Profile = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       const token = localStorage.getItem("token");
@@ -68,11 +69,13 @@ const Profile = () => {
         <h2 className="text-center text-2xl font-bold text-gray-800">Your Profile</h2>
         <div className="space-y-4">
           <div className="flex justify-center">
+
             <img
-              src={userData.avatar || "/static/images/my_project/default_avatar.png"}
+              src={userData.avatar_url ? `http://127.0.0.1:8000${userData.avatar_url}` : "http://127.0.0.1:8000/static/images/avatar.png"}
               alt="User Avatar"
               className="w-24 h-24 rounded-full border-4 border-indigo-600"
             />
+
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Name</label>
