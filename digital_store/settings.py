@@ -172,9 +172,10 @@ SIMPLE_JWT = {
 
 # Allow specific frontend URLs
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # For local development (React, for example)
-
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
 ]
 
 # Optionally, allow credentials
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True

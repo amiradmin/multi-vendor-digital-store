@@ -25,7 +25,7 @@ class VendorRegisterView(APIView):
     """
     API view for users to register as a vendor.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         user = request.user
