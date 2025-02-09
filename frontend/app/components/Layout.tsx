@@ -15,25 +15,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-screen flex flex-col">
       <header className="bg-gray-800 p-4">
         <nav className="container mx-auto flex justify-between items-center">
-          <Link href="/home">
+          <Link href="/">
             <span className="text-white text-xl font-semibold">Digital Marketplace</span>
           </Link>
           <ul className="flex space-x-4 items-center">
-            <li>
-              <Link href="/home">
-                <span className="text-white">Home</span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/product/1">
-                <span className="text-white">Product</span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/cart">
-                <span className="text-white">Cart</span>
-              </Link>
-            </li>
+
+
+
+
+
+
             <li className="relative">
               <button onClick={() => setMenuOpen(!menuOpen)}>
                 <Avatar
@@ -46,6 +37,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <Menu className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md">
                   <MenuItem>
                     <Link href="/auth/profile">Profile</Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link href="/orders">My Orders</Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link href="/products/new">Add Product</Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link href="/vendors/register">Add Vendor</Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link href="/dashboard">Dashboard</Link>
                   </MenuItem>
                   <MenuItem>
                     <button onClick={() => console.log("Logout")}>Logout</button>
