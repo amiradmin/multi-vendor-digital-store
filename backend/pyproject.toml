@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "multi-vendor-digital-store"
+version = "0.1.0"
+description = "Digital Marketplace is a multi-vendor e-commerce platform built with Django, designed for selling digital products such as e-books, music, software, and more."
+authors = ["Amir <amirbehvandi747@gmail.com>"]
+readme = "../README.md"
+
+packages = [
+  { include = "accounts" },
+  { include = "digital_store" },
+  { include = "products" },
+  { include = "vendors" }
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+django = ">=5.1.5,<6.0.0"
+pillow = ">=11.1.0,<12.0.0"
+psycopg2-binary = ">=2.9.10,<3.0.0"
+python-dotenv = ">=1.0.1,<2.0.0"
+django-phonenumber-field = ">=8.0.0,<9.0.0"
+django-phonenumbers = ">=1.0.1,<2.0.0"
+djangorestframework = ">=3.15.2,<4.0.0"
+drf-yasg = ">=1.21.8,<2.0.0"
+djangorestframework-simplejwt = ">=5.4.0,<6.0.0"
+django-cors-headers = ">=4.6.0,<5.0.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.sqlite3
-.env
+backend/.env
 
 # Node.js/Next.js
 node_modules/
