@@ -50,3 +50,4 @@ class ProductDeleteView(generics.DestroyAPIView):
 
     def get_queryset(self):
         return Product.objects.filter(vendor__user=self.request.user)
+
