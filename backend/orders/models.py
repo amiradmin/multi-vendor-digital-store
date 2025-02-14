@@ -1,9 +1,10 @@
+# models.py
 from django.db import models
 from django.contrib.auth import get_user_model
 from products.models import Product  # Assuming you have a Product model
+from vendors.models import Vendor  # Assuming you have a Vendor model
 
 User = get_user_model()
-
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -15,6 +16,7 @@ class Order(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, related_name='orders', on_delete=models.CASCADE)  # Add this line
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,7 +28,6 @@ class Order(models.Model):
     # Helper method to calculate total price of the order
     def calculate_total_price(self):
         return sum(item.total_price for item in self.items.all())
-
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)

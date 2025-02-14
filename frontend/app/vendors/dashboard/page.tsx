@@ -1,9 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import api from "./../../utils/api";  // Import the API instance from utils
+import axios from "axios";
 import Link from "next/link";
 import { FiPackage, FiDollarSign, FiSettings } from "react-icons/fi";
+
+const api = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+  headers: { "Content-Type": "application/json" },
+});
 
 const VendorDashboard = () => {
   const [orders, setOrders] = useState([]);
@@ -11,18 +16,22 @@ const VendorDashboard = () => {
   const [earnings, setEarnings] = useState(0);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("token");
+    console.log(token);
     if (!token) return;
 
     const fetchData = async () => {
       try {
+
         const [ordersRes, productsRes, earningsRes] = await Promise.all([
-          api.get("/vendor/orders/", { headers: { Authorization: `Bearer ${token}` } }),
-          api.get("/vendor/products/", { headers: { Authorization: `Bearer ${token}` } }),
-          api.get("/vendor/earnings/", { headers: { Authorization: `Bearer ${token}` } }),
+          api.get("/vendors/orders/", { headers: { Authorization: `Bearer ${token}` } }),
+          api.get("/vendors/products/", { headers: { Authorization: `Bearer ${token}` } }),
+          api.get("/vendors/earnings/", { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
-        setOrders(ordersRes.data);
+        console.log("Orders Response:", ordersRes.data);  // Debugging
+
+        setOrders(ordersRes.data.orders || ordersRes.data);  // Ensure correct structure
         setProducts(productsRes.data);
         setEarnings(earningsRes.data.total);
       } catch (error) {

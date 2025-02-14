@@ -111,7 +111,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     <Link href="/vendors/register">Add Vendor</Link>
                   </MenuItem>
                   <MenuItem>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/vendors/dashboard">Dashboard</Link>
                   </MenuItem>
                   <MenuItem>
                     <button onClick={handleLogout}>Logout</button>

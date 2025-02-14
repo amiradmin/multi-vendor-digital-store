@@ -3,7 +3,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Vendor
 from .serializers import VendorSerializer
+from products.serializers import ProductSerializer
+from orders.serializers import OrderSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 from accounts.models import User
+from products.models import Product
+from orders.models import Order
 
 class VendorListView(generics.ListAPIView):
     """
@@ -41,3 +47,38 @@ class VendorRegisterView(APIView):
         user.save()
 
         return Response({"message": "Vendor registered successfully!", "vendor_id": vendor.id})
+
+class VendorOrdersView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        orders = Order.objects.filter(vendor=user.vendor)
+        serializer = OrderSerializer(orders, many=True)
+        return Response({"orders": serializer.data})
+
+
+
+
+class VendorProductsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request):
+        user = request.user  # Ensure this is an authenticated user
+
+        # Get the Vendor instance related to this user
+        vendor = get_object_or_404(Vendor, user=user)
+
+        products = Product.objects.filter(vendor=vendor)  # Now using Vendor instance
+        serializer = ProductSerializer(products, many=True)
+
+        return Response(serializer.data, status=200)
+
+
+class VendorEarningsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request, *args, **kwargs):
+        return Response({"earnings": 1000})
