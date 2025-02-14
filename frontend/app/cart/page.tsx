@@ -1,18 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import api from "../../utils/api"; // Adjust path based on your project structure
+import api from "../utils/api"; // Adjust path based on your project structure
+import { useRouter } from "next/navigation"; // Correct hook for app router
 
 interface CartItem {
   id: number;
   name: string;
-  price: number | string; // Handling cases where price might be a string
+  price: number | string;
   image: string;
   quantity: number;
 }
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const router = useRouter(); // Correct hook for app router
 
   // Fetch cart items from local storage (or API if needed)
   useEffect(() => {
@@ -35,8 +37,47 @@ export default function CartPage() {
     if (!isNaN(price)) {
       return sum + price * item.quantity;
     }
-    return sum; // Skip invalid price
+    return sum;
   }, 0);
+
+  // Handle the checkout
+  const handleCheckout = async () => {
+    const orderData = {
+      items: cart.map(item => ({
+        product: item.id,
+        quantity: item.quantity,
+        total_price: Number(item.price) * item.quantity,
+      })),
+    };
+
+    try {
+      // Get the token from localStorage (or other secure storage)
+      const token = localStorage.getItem("token"); // Adjust this if needed
+
+      if (!token) {
+        alert("You must be logged in to proceed to checkout.");
+        return;
+      }
+
+      // Make an API call to create the order, passing the token in the Authorization header
+      const response = await api.post("/orders/", orderData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token in the header
+        },
+      });
+
+      if (response.status === 201) {
+        // Redirect to order confirmation or order details page
+        router.push(`/order/${response.data.id}`);
+      } else {
+        // Handle error (show message to user)
+        alert("Error creating the order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      alert("There was an error processing your order. Please try again.");
+    }
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -70,7 +111,10 @@ export default function CartPage() {
             <span>${totalPrice.toFixed(2)}</span>
           </div>
 
-          <button className="mt-6 w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700">
+          <button
+            onClick={handleCheckout}
+            className="mt-6 w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700"
+          >
             Proceed to Checkout
           </button>
         </div>
