@@ -9,22 +9,50 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('vendors', '0001_initial'),
+        ("vendors", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('description', models.TextField()),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('category', models.CharField(choices=[('Software', 'Software'), ('Ebook', 'Ebook'), ('Course', 'Course'), ('Music', 'Music'), ('Other', 'Other')], default='Other', max_length=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField(default=True)),
-                ('vendor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='vendors.vendor')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("description", models.TextField()),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("Software", "Software"),
+                            ("Ebook", "Ebook"),
+                            ("Course", "Course"),
+                            ("Music", "Music"),
+                            ("Other", "Other"),
+                        ],
+                        default="Other",
+                        max_length=10,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("is_active", models.BooleanField(default=True)),
+                (
+                    "vendor",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="products",
+                        to="vendors.vendor",
+                    ),
+                ),
             ],
         ),
     ]

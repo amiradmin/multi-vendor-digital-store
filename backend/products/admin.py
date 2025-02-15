@@ -12,5 +12,5 @@ class ProductAdmin(admin.ModelAdmin):
         search_fields: Fields to search by in the admin panel.
     """
 
-    list_display = ('name', 'price', 'category', 'vendor', 'created_at', 'is_active')
-    search_fields = ('name', 'description', 'vendor__store_name')
+    list_display = ("name", "price", "category", "vendor", "created_at", "is_active")
+    search_fields = ("name", "description", "vendor__store_name")

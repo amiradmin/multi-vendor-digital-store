@@ -6,6 +6,7 @@ from .models import Order, OrderItem, Product
 from .serializers import OrderSerializer, OrderItemSerializer
 from rest_framework.views import APIView
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
 
 
 class CartItemCountView(APIView):
@@ -17,14 +18,18 @@ class CartItemCountView(APIView):
 
     def get(self, request, *args, **kwargs):
         # Assuming the cart is an uncompleted order
-        order = Order.objects.filter(user=request.user, status='pending').first()
+        order = Order.objects.filter(user=request.user, status="pending").first()
 
         if not order:
             return Response({"count": 0}, status=status.HTTP_200_OK)
 
         # Get the count of items in the order
-        item_count = OrderItem.objects.filter(order=order).aggregate(total_count=Sum('quantity'))[
-                         'total_count'] or 0
+        item_count = (
+            OrderItem.objects.filter(order=order).aggregate(
+                total_count=Sum("quantity")
+            )["total_count"]
+            or 0
+        )
 
         return Response({"count": item_count}, status=status.HTTP_200_OK)
 
@@ -33,6 +38,7 @@ class VendorOrderViewSet(viewsets.ModelViewSet):
     """
     API endpoint for vendors to view/manage orders that contain their products.
     """
+
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
@@ -41,10 +47,16 @@ class VendorOrderViewSet(viewsets.ModelViewSet):
         Override the queryset to filter orders by products owned by the vendor.
         """
         vendor_products = Product.objects.filter(vendor=self.request.user)
-        orders_with_vendor_products = OrderItem.objects.filter(product__in=vendor_products).values_list('order', flat=True).distinct()
+        orders_with_vendor_products = (
+            OrderItem.objects.filter(product__in=vendor_products)
+            .values_list("order", flat=True)
+            .distinct()
+        )
 
         # Return the orders that have items from the vendor's products
-        return Order.objects.filter(id__in=orders_with_vendor_products).order_by('-created_at')
+        return Order.objects.filter(id__in=orders_with_vendor_products).order_by(
+            "-created_at"
+        )
 
     def list(self, request, *args, **kwargs):
         """
@@ -59,7 +71,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing orders.
     """
-    queryset = Order.objects.all().order_by('-created_at')
+
+    queryset = Order.objects.all().order_by("-created_at")
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
@@ -70,18 +83,19 @@ class OrderViewSet(viewsets.ModelViewSet):
         order = serializer.save(user=self.request.user)
 
         # Create OrderItems from the request data and add them to the order
-        items_data = self.request.data.get('items', [])
+        items_data = self.request.data.get("items", [])
+        order_items = []
         for item_data in items_data:
-            product_id = item_data['product']
-            product = Product.objects.get(id=product_id)
-            quantity = item_data['quantity']
+            product_id = item_data.get("product")
+            product = get_object_or_404(Product, id=product_id)  # Handle product not found
+            quantity = item_data.get("quantity")
             total_price = product.price * quantity
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=quantity,
-                total_price=total_price
+            order_items.append(
+                OrderItem(order=order, product=product, quantity=quantity, total_price=total_price)
             )
+
+        # Bulk create order items to optimize database access
+        OrderItem.objects.bulk_create(order_items)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -95,17 +109,18 @@ class OrderViewSet(viewsets.ModelViewSet):
         order.items.all().delete()
 
         # Create new OrderItems based on the updated data
-        items_data = self.request.data.get('items', [])
+        items_data = self.request.data.get("items", [])
+        order_items = []
         for item_data in items_data:
-            product_id = item_data['product']
-            product = Product.objects.get(id=product_id)
-            quantity = item_data['quantity']
+            product_id = item_data.get("product")
+            product = get_object_or_404(Product, id=product_id)  # Handle product not found
+            quantity = item_data.get("quantity")
             total_price = product.price * quantity
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=quantity,
-                total_price=total_price
+            order_items.append(
+                OrderItem(order=order, product=product, quantity=quantity, total_price=total_price)
             )
+
+        # Bulk create order items to optimize database access
+        OrderItem.objects.bulk_create(order_items)
 
         return Response(serializer.data, status=status.HTTP_200_OK)

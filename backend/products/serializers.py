@@ -14,14 +14,14 @@ class ProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True, required=False)
 
     class Meta:
-        model: type[Product] = Product
-        fields: list[str] = [
+        model = Product  # No need for type hint here
+        fields = [
             "id",
             "vendor",
             "name",
             "description",
             "price",
             "image",  # Full URL for image
-            "file",   # Full URL for file
+            "file",  # Full URL for file
             "created_at",
         ]
